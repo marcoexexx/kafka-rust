@@ -1,0 +1,10 @@
+[package]
+name = "consumer"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+kafka = "0.10.0"
+rdkafka = "0.37.0"
+tokio = { version = "1.43.0", features = ["full"] }
+uuid = { version = "1.11.0", features = ["serde", "v4"] }
