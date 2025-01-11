@@ -1,3 +1,5 @@
+use std::io::Write;
+
 use rdkafka::producer::{FutureProducer, FutureRecord};
 use rdkafka::util::Timeout;
 use rdkafka::ClientConfig;
@@ -22,14 +24,20 @@ fn create_producer(bootstrap_server: &str) -> Result<FutureProducer> {
 async fn main() -> Result<()> {
   let producer = create_producer(KAFKA_HOST_URL)?;
 
-  let record = FutureRecord::to(KAFKA_TOPIC)
-    .key("1")
-    .payload(b"has joined the chat.");
+  loop {
+    let mut input = String::new();
 
-  producer
-    .send(record, Timeout::Never)
-    .await
-    .expect("Failed to produce");
+    print!("Type: ");
+    std::io::stdin().read_line(&mut input)?;
+    std::io::stdout().flush()?;
 
-  Ok(())
+    let record = FutureRecord::to(KAFKA_TOPIC)
+      .key("1")
+      .payload(input.as_bytes());
+
+    producer
+      .send(record, Timeout::Never)
+      .await
+      .expect("Failed to produce");
+  }
 }
